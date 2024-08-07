@@ -1,0 +1,97 @@
+1 cheez) Database se jab bhi baat karne ka try kartain hain toh problems aa sakti hain 
+ try-catch ya promises ka use must karain
+
+2 cheez) Database another continent main hai time lgata hai 
+ async-await lagao 
+
+3 cheez) process.env.PORT || 8000 {yahan hmm koi secondary default port bhi dete hain
+ agar pehla na chla toh dusra chalega},
+
+4 ) jab bhi middleware ya configuration settings ka use kartain hain 
+ app.use() ka use karte hain
+
+5 ) cors and cookie-parser ki values app banne ke badd configure hoti hain
+
+6 ) Request server tk bejne se pehle ki checking ke liye middlewares ka use hota hai 
+
+{ 
+ hum user se hi file upload krvayenge multer ke through hi file upload hoti hai 
+ cloudnary ek service hai jaise aws sdk hai vese cloudnary sdk bhi aata hai
+ cloudnary apse file leti hai or ye apne server pr store kr leti hai
+}
+
+{
+ video 11.) multer ka use krke middleware bnayenge kyuki hm multer ko as a middleware 
+use krenge taki jahan jahan file upload capabilities ki jarurat ho wahan wahan ise use kr lenge
+
+middleware ko configure bhi krna pdta hai
+
+12.) http headers main meta data hota hai 
+ headers request main bhi milte hain response main bhi
+
+headers ke bahut sare kaam hote hain 
+inhe chaching,authentication,state managemaent ke liye bhi kaam main liya jata hai 
+
+Request headers => from client
+RESPONSE HEADERS => from Server
+REPRESENTATION HEADERS => encoding/compression
+PAYLOAD HEADERS => data
+
+MOST COMMON HEADERS *********
+..Accept : application/json
+..User-Agent : 
+..Authorization :
+..Content-type :
+..Cookie:
+..Cache-Control
+
+CORS ********
+..Access-Control-Allow-Origin
+..Access-Control-Allow-Credentials
+..Access-Control-Allow-Method
+
+SECURITY ********
+..Cross-Origin-Embedder-Policy
+..Cross-Origin-Opener-Policy
+..Content-Security-Policy
+..X-XSS-Protection
+
+HTTP Methods -> Basic Set of operations that
+can be used to interact with server
+
+.GET : retrive a resource
+.HEAD : no message body (response headers only)
+.OPTIONS : what operations are available
+.TRACE : loopback test (get same data)
+.DELETE : remove a resource
+.PUT : replace a resource
+.POST : interact with resource (mostly add)
+.PATCH : change part of a resource
+
+HTTP STATUS CODE *******
+ . 1xx Information
+ . 2xx Success
+ . 3xx Redirection
+ . 4xx Client error
+ . 5xx Server error
+
+100 Continue
+102 Processing
+200 OK
+201 Created
+202 Accepted
+307 temporary redirect
+308 permanent redirect
+400 Bad request
+401 Unauthorized
+402 Payment Required
+404 Not Found
+500 Internal Server Error
+504 Gateway time out
+
+****************************
+jb hmm same file main routes define nhi karte toh hmm middleware ka use kre hi routes wali file main control shift krte hain
+
+that is 
+    app.get() wali line avoid hi krte hain
+    jis file main routes define hote hain fir us file main .route method ka use hota hai
