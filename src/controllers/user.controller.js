@@ -2,6 +2,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import { ApiErrors } from "../utils/ApiErrors.js"
 import { User } from "../models/user.modal.js"
 import { uploadToCloudnairy } from "../utils/cloudnairy.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
 
 const registerUser = asyncHandler( async (req,res) => {
     // res.status(200).json({
@@ -18,7 +19,7 @@ const registerUser = asyncHandler( async (req,res) => {
     //check response and remove pass and refresh token
     //return response
 
-    const {username,email,fullname,avatar,password} = req.body
+    const {username,email,fullname,avatar,password,coverImage} = req.body
 
     if (
         [username,email,fullname,avatar,password].some((field)=>field?.trim() === "")
@@ -36,16 +37,44 @@ const registerUser = asyncHandler( async (req,res) => {
         throw new ApiErrors(409, "User with same details already exists")
     }
     
+    //we are getting the path of avatar file and cover
+    
     const avatarLoacalPath = req.files?.avatar[0].path;
     const coverLocalPath = req.files?.avatar[0].path;
 
     if (!avatarLoacalPath) {
+        // after getting path make ref in not empty
         throw new ApiErrors(400,"Avatar not found")
     }
+    //upload To cloudnairy receives a path of file to upload
     
     const avtarRef = uploadToCloudnairy(avatarLoacalPath)
+    const coverRef = uploadToCloudnairy(coverLocalPath)
 
-    
+    if (!avtarRef) {
+        throw new ApiErrors(400,"Avatar not uploaded")
+    }
+
+    const newUser =  await User.create({
+        username : username.toLowerCase(),
+        email,
+        fullname,
+        avatar : avtarRef.url,
+        coverImage : coverRef?.url,
+        password
+    })
+
+    //checking user is created or not
+    const createdUser = await User.findById(newUser._id).select("-password -refreshToken")
+
+    if (!createdUser) {
+        throw new ApiErrors(500,"Something went wrong while registering")
+    }
+
+    return res.status(201).json(
+        new ApiResponse("User Created Successfully",200,createdUser)
+    )
+
 })
 
 export {registerUser}
