@@ -15,9 +15,11 @@ app.use(express.static('public'))
 app.use(cookieParser())
 
 //import routes
-import router from "./routes/user.router.js"
+import userRouter from "./routes/user.router.js"
 
 //routes declaration
-app.use("/api/v1/users" , router)
-
+//pej=hle yahin routes likte the or yahin controllers likhte the 
+//ab routes ko lane k liye middleware ka use krenge
+app.use("/api/v1/users" , userRouter)
+// ye wala address prefix ki tarah kaam kr rha hai
 export default app;

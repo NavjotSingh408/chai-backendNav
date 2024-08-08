@@ -1,7 +1,7 @@
 import {asyncHandler} from "../utils/asyncHandler.js"
 import { ApiErrors } from "../utils/ApiErrors.js"
 import { User } from "../models/user.modal.js"
-import { uploadToCloudnairy } from "../utils/cloudnairy.js"
+import {uploadToCloudnairy} from "../utils/cloudnairy.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 
 const registerUser = asyncHandler( async (req,res) => {
@@ -19,28 +19,38 @@ const registerUser = asyncHandler( async (req,res) => {
     //check response and remove pass and refresh token
     //return response
 
-    const {username,email,fullname,avatar,password,coverImage} = req.body
+    const {fullname,email,username,password} = req.body
+
+    // res.status(200).json({
+    //     message : "ok yes mera phone hai Poco x6 pro 5g",
+    //     username : username,
+    //     email : email,
+    //     fullname : fullname,
+    //     avatar : avatar,
+    //     password : password,
+    // })
 
     if (
-        [username,email,fullname,avatar,password].some((field)=>field?.trim() === "")
+        [fullname,email,username,password].some((field)=>field?.trim() === "")
     ) {
         throw new ApiErrors(400,"All fields are necessary")
     }
 
-    const userExisted = User.findOne(
-        {
-            $or : [{ username },{ email }]
-        }
-    )    //finds first one that matches
+    const userExisted = await User.findOne({
+        $or: [{email},{username}]
+    })    //finds first one that matches
 
     if (userExisted) {
         throw new ApiErrors(409, "User with same details already exists")
     }
     
     //we are getting the path of avatar file and cover
+    console.log("files paths : ");
+    console.log(req);
     
-    const avatarLoacalPath = req.files?.avatar[0].path;
-    const coverLocalPath = req.files?.avatar[0].path;
+    
+    const avatarLoacalPath = req.files?.avatar[0]?.path;
+    const coverLocalPath = req.files?.coverImage[0]?.path;
 
     if (!avatarLoacalPath) {
         // after getting path make ref in not empty
@@ -48,20 +58,20 @@ const registerUser = asyncHandler( async (req,res) => {
     }
     //upload To cloudnairy receives a path of file to upload
     
-    const avtarRef = uploadToCloudnairy(avatarLoacalPath)
-    const coverRef = uploadToCloudnairy(coverLocalPath)
+    const avtarRef = await uploadToCloudnairy(avatarLoacalPath) //upload krwane ka method time lgayega
+    const coverRef = await uploadToCloudnairy(coverLocalPath)
 
     if (!avtarRef) {
         throw new ApiErrors(400,"Avatar not uploaded")
     }
 
     const newUser =  await User.create({
-        username : username.toLowerCase(),
-        email,
         fullname,
         avatar : avtarRef.url,
-        coverImage : coverRef?.url,
-        password
+        coverImage : coverRef?.url || "",
+        email,
+        password,
+        username : username.toLowerCase(),
     })
 
     //checking user is created or not
@@ -72,7 +82,7 @@ const registerUser = asyncHandler( async (req,res) => {
     }
 
     return res.status(201).json(
-        new ApiResponse("User Created Successfully",200,createdUser)
+        new ApiResponse(200,createdUser,"User Created Successfully")
     )
 
 })

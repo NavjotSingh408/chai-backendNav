@@ -3,7 +3,7 @@ import DBConnect from "./db/dbconn.js"
 import app from "./app.js"
 
 dotenv.config({
-    path: './env'
+    path: './.env'
 })
 
 DBConnect() //this function is async use .then and catch for further handling
