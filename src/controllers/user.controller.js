@@ -46,9 +46,8 @@ const registerUser = asyncHandler( async (req,res) => {
     
     //we are getting the path of avatar file and cover
     console.log("files paths : ");
-    console.log(req);
-    
-    
+    console.log(req.files);
+        
     const avatarLoacalPath = req.files?.avatar[0]?.path;
     const coverLocalPath = req.files?.coverImage[0]?.path;
 
@@ -74,7 +73,7 @@ const registerUser = asyncHandler( async (req,res) => {
         username : username.toLowerCase(),
     })
 
-    //checking user is created or not
+    // //checking user is created or not
     const createdUser = await User.findById(newUser._id).select("-password -refreshToken")
 
     if (!createdUser) {
