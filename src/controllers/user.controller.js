@@ -45,11 +45,16 @@ const registerUser = asyncHandler( async (req,res) => {
     }
     
     //we are getting the path of avatar file and cover
-    console.log("files paths : ");
-    console.log(req.files);
+    // console.log("files paths : ");
+    // console.log(req.files);
         
     const avatarLoacalPath = req.files?.avatar[0]?.path;
-    const coverLocalPath = req.files?.coverImage[0]?.path;
+    // const coverLocalPath = req.files?.coverImage[0]?.path; //this handling can produce errors
+    let coverLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+      coverLocalPath = req.files.coverImage[0].path   
+    }
+
 
     if (!avatarLoacalPath) {
         // after getting path make ref in not empty
